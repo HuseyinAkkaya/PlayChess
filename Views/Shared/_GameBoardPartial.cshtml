@@ -1,0 +1,155 @@
+﻿
+@{
+    /*
+     * Default css for buttons:
+     * classes = "cell";
+     *
+     */
+
+    const string defaultcellclasses = "cell ";
+    string cellclasses = "";
+    bool celldisabled;
+    string cellvalue = "";
+    string cellname;
+    char[] colnamelist = new char[10] { ' ', 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', ' ' };
+}
+
+<h2>Play Chess</h2>
+<div class="modal fade" id="myModal" role="dialog" data-backdrop="false" aria-hidden="true">
+    <div class="modal-dialog">
+        @{
+            var colorstring = Model.Color == Chess.Enums.SideColor.Black ? "blackcell" : "whitecell";
+        }
+        <!-- Modal content-->
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">Pawn Promotion</h4>
+            </div>
+            <div class="modal-body ">
+                <p>Make Your Choice!</p>
+
+                <div class="container-fluid">
+                    <div class="row">
+                        <div class="col-sm-3">
+                            <button id="Rook" name="Rook" class="cell " + @colorstring +" style="height: 50px; width: 50px;">
+                            </button>
+                        </div>
+                        <div class="col-sm-3">
+                            <button id="Knight" name="Knight" class="cell " + @colorstring +" style="height: 50px; width: 50px;">
+                            </button>
+                        </div>
+                        <div class="col-sm-3">
+                            <button id="Bishop" name="Bishop" class="cell " + @colorstring +" style="height: 50px; width: 50px;">
+                            </button>
+                        </div>
+                        <div class="col-sm-3">
+                            <button id="Queen" name="Queen" class="cell " + @colorstring +" style="height: 50px; width: 50px;">
+                            </button>
+                        </div>
+                    </div>
+
+                </div>
+
+
+
+
+            </div>
+            <div class="modal-footer">
+
+            </div>
+        </div>
+
+    </div>
+</div>
+<!-- Chess Board Area -->
+<div id="ChessBoard" class="ChessBoard" style="height: 300px; width: 300px;">
+    @{
+        string GetCell(int row, int col)
+        {
+
+
+            // Set cell names ("cell90", "cell99", "cell00", "cell09")
+            cellname = "cell" + row + col;
+            // If buttons are play area
+            if (row < 9 && row > 0 && col > 0 && col < 9)
+            {
+                // Set default classes to playground cells
+                cellclasses = defaultcellclasses;
+
+                // Is Cell Disabled?
+                celldisabled = false;
+
+                // Set playground cells values
+                cellvalue = "";
+
+                // Set Cell Colors
+                if ((row % 2 == 0 && col % 2 == 0) || (row % 2 == 1 && col % 2 == 1))
+                {
+                    Console.WriteLine("a");
+                    cellclasses += " browncell";
+                }
+                else
+                {
+                    cellclasses += " whitecell";
+                }
+
+
+            }
+            else
+            // If buttons are info buttons for user
+            {
+                // Set row names to info area
+                if ((col == 0 || col == 9) && row > 0 && row < 9)
+                {
+                    cellvalue = row.ToString();
+                }
+                // Set col numbers to info area
+                else if ((row == 0 || row == 9) && col > 0 && col < 9)
+                {
+                    cellvalue = colnamelist[col].ToString();
+                }
+                // Set corner cells names
+                else
+                {
+                    cellvalue = "";
+                }
+
+                cellclasses = defaultcellclasses + " infocell";
+                celldisabled = true;
+            }
+            string cell = "<button id=\"" + @cellname + "\" name=\"" + @cellname + "\" class=\"" + @cellclasses + "\" " + (celldisabled ? ("disabled=\"" + @celldisabled + "\"") : "") + " >"
+                + @cellvalue + "</button>";
+            return cell;
+        }
+
+    }
+    @{
+        if (Model.Color == Chess.Enums.SideColor.Black)
+        {
+            for (int row = 0; row <= 9; row++)
+            {
+                for (int col = 9; col >= 0; col--)
+                {
+                    // GetBoard(col, row);
+                    @Html.Raw(GetCell(row, col));
+                }
+            }
+        }
+        else
+        {
+            for (int row = 9; row >= 0; row = row - 1)
+            {
+                for (int col = 0; col <= 9; col = col + 1)
+                {
+                    // GetBoard(col, row);
+                    @Html.Raw(GetCell(row, col));
+                }
+            }
+        }
+
+    }
+</div>
+
+
+
+

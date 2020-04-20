@@ -1,0 +1,63 @@
+﻿/* ChessBoard */
+
+.ChessBoard{
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 20px;
+    margin-bottom: 20px;
+}
+
+/* Cell */
+.cell {
+    float: left;
+    width: 10%;
+    height: 10%;
+    color: red;
+    border: none;
+    /*border: 2px solid black;*/
+}
+
+.promotioncell {
+    float: left;
+    width: 10%;
+    height: 10%;
+    color: red;
+    border: none;
+    /*border: 2px solid black;*/
+}
+
+.infocell {
+    text-align: center;
+    text-size-adjust: auto;
+    border: none !important;
+}
+
+/* Cell Colors */
+
+.info {
+    background-color: gray;
+    color: royalblue;
+}
+
+.whitecell{
+    background-color: white;
+}
+
+.greencell {
+    background-color: green;
+}
+
+.browncell {
+    background-color: brown;
+}
+
+.blackcell {
+    background-color: black;
+}
+
+
+/* Background Images */
+
+.bgiempty {
+    background-image: none;
+}
