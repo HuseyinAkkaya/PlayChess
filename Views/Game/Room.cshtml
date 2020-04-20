@@ -179,6 +179,8 @@
     chat =  $.connection.chessHub;
     chat.client.addChatMessage = function (name, message) {
         console.log(message);
+        fromCell = undefined;
+        toCell = undefined;
         ajaxpost();
             };
      $.connection.hub.start().done(function () {
