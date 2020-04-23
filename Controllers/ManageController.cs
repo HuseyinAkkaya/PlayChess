@@ -60,6 +60,12 @@ namespace Chess.Controllers
             User user = userService.GetUser(User.Identity.GetUserId());
             return View(user);
         }
+        [HttpPost]
+        public ActionResult Index(User user)
+        {
+            userService.UpdateUser(user);
+            return View(user);
+        }
 
 
         public async Task<ActionResult> Details(ManageMessageId? message)

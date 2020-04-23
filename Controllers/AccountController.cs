@@ -204,6 +204,7 @@ namespace Chess.Controllers
                        // string uid = UsersContext.Users.ToList().FirstOrDefault(e => e.Email == user.UserName).Id;
                         User newUser = new User()
                         {
+                            EMail=user.UserName,
                             UId = user.Id,
 
                         };

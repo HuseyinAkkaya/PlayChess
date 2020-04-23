@@ -13,5 +13,7 @@ namespace Chess.Contexts
         public virtual DbSet<User> Users { get; set; }
         public virtual DbSet<GameRoom> GameRooms { get; set; }
         public virtual DbSet<UserConnection> UserConnections { get; set; }
+
+        public virtual DbSet<Invitation> Invitations{ get; set; }
     }
 }

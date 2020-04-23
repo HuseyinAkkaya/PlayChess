@@ -1,0 +1,45 @@
+﻿@model IEnumerable<Chess.Models.GameViewModel>
+
+@{
+    ViewBag.Title = "MyGames";
+}
+
+<h2>MyGames</h2>
+
+<table class="table">
+    <tr>
+        <th>
+            @Html.DisplayNameFor(model => model.OpponentUserMail)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Turn)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.GameStatus)
+        </th>
+        <th></th>
+    </tr>
+
+    @foreach (var item in Model)
+    {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.OpponentUserMail)
+            </td>
+            <td>
+                @(item.Color==item.Turn?"Your turn!":"Waiting your opponent's turn")
+             
+                
+            </td>
+
+            <td>
+                @Html.DisplayFor(modelItem => item.GameStatus)
+            </td>
+            <td>
+                @Html.ActionLink("Go to Game", "Room", "Game", new { roomid = item.RoomId }, new { })
+
+            </td>
+        </tr>
+    }
+
+</table>

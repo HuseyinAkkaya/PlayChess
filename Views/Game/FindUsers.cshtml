@@ -1,0 +1,75 @@
+﻿@model IEnumerable<Chess.Entities.User>
+@using Chess.Enums
+
+@{
+    ViewBag.Title = "FindUsers";
+}
+
+<h2>FindUsers</h2>
+
+<table class="table">
+    <tr>
+        <th>
+            @Html.DisplayNameFor(model => model.EMail)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Title)
+        </th>
+
+        <th>
+            @Html.DisplayNameFor(model => model.Name)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Surname)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.WonCount)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.DrawCount)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.LoseCount)
+        </th>
+        <th>
+
+        </th>
+    </tr>
+
+@foreach (var item in Model) {
+<tr>
+    <td>
+        @Html.DisplayFor(modelItem => item.EMail)
+    </td>
+    <td>
+        @{ if (item.Title != Chess.Enums.Title.NONE)
+            {
+                @Html.DisplayFor(modelItem => item.Title)
+            }
+
+
+        }
+    </td>
+
+    <td>
+        @Html.DisplayFor(modelItem => item.Name)
+    </td>
+    <td>
+        @Html.DisplayFor(modelItem => item.Surname)
+    </td>
+    <td>
+        @Html.DisplayFor(modelItem => item.WonCount)
+    </td>
+    <td>
+        @Html.DisplayFor(modelItem => item.DrawCount)
+    </td>
+    <td>
+        @Html.DisplayFor(modelItem => item.LoseCount)
+    </td>
+    <td>
+        @Html.ActionLink("Invite To The Game", "Invite","Game" , new { receiverUid = item.UId, invitationType = InvitationType.Game},new { })
+    </td>
+</tr>
+}
+
+</table>

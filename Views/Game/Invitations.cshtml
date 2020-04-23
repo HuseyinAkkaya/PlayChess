@@ -1,0 +1,61 @@
+﻿@model IEnumerable<Chess.Models.InvitationViewModel>
+
+@{
+    ViewBag.Title = "Invitations";
+}
+
+<h2>Invitations</h2>
+
+<table class="table">
+    <tr>
+        <th>
+            @Html.DisplayNameFor(model => model.InvitationType)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.InvitationFromEmail)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.InvitationState)
+        </th>
+
+        <th></th>
+    </tr>
+
+    @foreach (var item in Model)
+    {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.InvitationType)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.InvitationFromEmail)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.InvitationState)
+            </td>
+
+            <td>
+                @{ 
+                    if (item.InvitationState == Chess.Enums.InvitationState.Denied)
+                    {
+                        
+                    }
+                    else if(item.InvitationState == Chess.Enums.InvitationState.Accepted)
+                    {
+                        //todo kabul edilmişse oyuna gidecek
+                    }
+                    else
+                    {
+                        @Html.ActionLink("Accept", "Accept", "Game", new { invitationId = item.Id }, new { });
+                        @: | 
+                        @Html.ActionLink("Deny", "Deny", "Game", new { invitationId = item.Id }, new { });
+                    }
+
+                }
+
+
+            </td>
+        </tr>
+    }
+
+</table>

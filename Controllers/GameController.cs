@@ -13,6 +13,8 @@ namespace Chess.Controllers
 {
     public class GameController : Controller
     {
+        UserService userService = new UserService();
+        InvitationService invitationService = new InvitationService();
 
         public ActionResult Chat()
         {
@@ -28,6 +30,89 @@ namespace Chess.Controllers
             roomService.CreateGame("a", "b");
             return View();
         }
+
+        public ActionResult FindUsers()
+        {
+            var userlist = userService.GetOtherUsers(User.Identity.GetUserId());
+
+
+            return View(userlist);
+        }
+
+        public ActionResult Invitations()
+        {
+            
+            var invitations = invitationService.GetInvitations(User.Identity.GetUserId(), null);
+            var model = invitations.Select(e => new InvitationViewModel() {
+            Id=e.Id,
+            InvitationFrom=e.InvitationFrom,
+            InvitationState=e.InvitationState,
+            InvitationType=e.InvitationType,
+            InvitationFromEmail = userService.GetUser(e.InvitationFrom).EMail,
+            }).ToList();
+
+
+            return View(model);
+        }
+        
+        public ActionResult MyGames()
+        {
+            List<GameViewModel> games = roomService.GetGames(User.Identity.GetUserId());
+            return View(games);
+        }
+        public ActionResult Accept(int invitationId)
+        {
+            var invitation = invitationService.GetInvitation(invitationId);
+            if(invitation==null || invitation.InvitationTo != User.Identity.GetUserId() || invitation.InvitationState != InvitationState.Pending)
+            {
+                return new HttpStatusCodeResult(404,"Fuck Off Exception!");
+            }
+            invitation.InvitationState = InvitationState.Accepted;
+            invitationService.UpdateInvitation(invitation);
+
+            if(invitation.InvitationType == InvitationType.Game)
+            {
+                Random r = new Random(100);
+                int _roomid;
+                if(r.Next() %2 == 0)
+                {
+                  _roomid=  roomService.CreateGame(User.Identity.GetUserId(), invitation.InvitationFrom);
+                }
+                else
+                {
+                   _roomid= roomService.CreateGame(invitation.InvitationFrom, User.Identity.GetUserId());
+                }
+                
+                
+
+
+                return RedirectToAction("Room",new { roomid = _roomid });
+
+            }
+
+
+            return RedirectToAction("");
+        }
+
+        
+        public ActionResult Deny(int invitationId)
+        {
+            var invitation = invitationService.GetInvitation(invitationId);
+            if (invitation == null || invitation.InvitationTo != User.Identity.GetUserId() || invitation.InvitationState != InvitationState.Pending)
+            {
+                return new HttpStatusCodeResult(404, "Fuck Off Exception!");
+            }
+            invitation.InvitationState = InvitationState.Denied;
+            invitationService.UpdateInvitation(invitation);
+            return RedirectToAction("Invitations");
+        }
+
+        public ActionResult Invite(string receiverUid, InvitationType invitationType)
+        {
+            invitationService.SendInvitation(User.Identity.GetUserId(), receiverUid, invitationType);
+            return RedirectToAction("FindUsers");
+        }
+
 
         public ActionResult Room(int? roomid)
         {

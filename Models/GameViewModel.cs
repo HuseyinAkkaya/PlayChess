@@ -9,6 +9,7 @@ namespace Chess.Models
 {
     public class GameViewModel
     {
+        public int Id { get; set; }
         public int RoomId { get; set; }
         public List<PieceModel> Pieces { get; set; }
         public SideColor Turn { get; set; } //Sıra Hangi Renkte
@@ -18,6 +19,7 @@ namespace Chess.Models
         public string toCell { get; set; }
         public string WhiteUserId { get; set; }
         public string BlackUserId { get; set; }
+        public string OpponentUserMail { get; set; }
         public GameStatus GameStatus { get; set; }
 
         public string MyHashCode()

@@ -21,8 +21,8 @@
 <script src="~/signalr/hubs"></script>
 <script>
     var chat;
-  
-    </script>
+
+</script>
 
 
 <h2>Play Chess</h2>
@@ -169,36 +169,34 @@
 
 <script>
     console.log("AboutPage");
-
+    var gameContinue = true;
     var turn;
     var model;
     var fromCell;
     var toCell;
     var roomid;
 
-    chat =  $.connection.chessHub;
+    chat = $.connection.chessHub;
     chat.client.addChatMessage = function (name, message) {
-        console.log(message);
-        fromCell = undefined;
-        toCell = undefined;
-        ajaxpost();
-            };
-     $.connection.hub.start().done(function () {
+        if (message == roomid) {
+            if (gameContinue) {
+                console.log(message);
+                fromCell = undefined;
+                toCell = undefined;
+                ajaxpost();
+            }
+
+        }
+
+    };
+    $.connection.hub.start().done(function () {
 
         console.log("done");
         setGame();
     }).fail(function () { console.log("fail"); });
-    
 
 
 
-    $(document).ready(function () {
-
-               // Reference the auto-generated proxy for the hub.
-            
-        
-        
-    });
     function ajaxpost() {
         var t = {
             fromCell: fromCell,
@@ -231,7 +229,8 @@
     <script>
 
 
-    var pieceList;
+        var pieceList;
+        var message;
         var receiverid;
         var themeName;
         var color;
@@ -253,26 +252,41 @@
                 return k;
             return null;
         }
-         
+
        async function fillBoard() {
-             
-  
+
+
             console.log("filled");
-            pieceList = model.Pieces;
+           pieceList = model.Pieces;
+
+          
+           if (model.GameStatus == gameStatusEnum.BlackWon) {
+               gameContinue = false;
+               message="Game Over\nBlack Player Won";
+           } else if (model.GameStatus == gameStatusEnum.WhiteWon) {
+               gameContinue = false;
+                message="Game Over\nWhite Player Won";
+           } else if (model.GameStatus == gameStatusEnum.Scoreless) {
+               gameContinue = false;
+               message="Game Over\nScorless";
+           }
             roomid = model.RoomId;
             $(".cell").css("background-image", "none").removeAttr('playable');
 
             for (var i = 0; i < pieceList.length; i++) {
             var cell = pieceList[i].Row.toString() + pieceList[i].Col.toString();
-            color = pieceList[i].Color;
-            $("#cell" + pieceList[i].Row.toString() + pieceList[i].Col.toString())
+                color = pieceList[i].Color;
+                if (pieceList[i].Row != 0) {
+                $("#cell" + pieceList[i].Row.toString() + pieceList[i].Col.toString())
                 .css("background-image", "url(\"../Media/PieceThemes/" + themeName + "/" + string_of_enum(sideColorEnum, color) + "/" + pieceList[i].Name + ".png\")")
                 .css("background-size", "100%");
 
-                if (color == model.Color && model.Color == model.Turn) {
+                    if (color == model.Color && model.Color == model.Turn && gameContiune) {
                         document.getElementById("cell" + cell).setAttribute('playable', "true");
-                    }
-            }
+                }
+                }
+           }
+
             if (model.GameStatus == gameStatusEnum.Promotion && model.Color == model.Turn) {
                 $("#myModal").modal();
                // myModal.toggle();
@@ -280,10 +294,16 @@
             }
             if (turn != model.Turn) {
 
-                     chat.server.sendChatMessage(receiverid, "refresh");
+                chat.server.sendChatMessage(receiverid, roomid);
+
+           }
+            
+           turn = model.Turn;
+
+            if (!gameContinue) {
+               alert(message);
 
             }
-            turn = model.Turn;
 
         }
 
@@ -321,7 +341,7 @@
                     toCell = this.name;
                     fromCell = "Pawn";
 
-                     chat.server.sendChatMessage(receiverid, "refresh");
+                     chat.server.sendChatMessage(receiverid, roomid);
 
                      ajaxpost();
 
@@ -336,14 +356,9 @@
                     secondClick = false;
                     document.getElementById("toCell").value = this.name;
                     console.log("secondClick");
-
                     fromCell = document.getElementById("fromCell").value;
                     toCell = document.getElementById("toCell").value;
-
-
-                    console.log("before");
                     ajaxpost();
-                    console.log("after");
                 }
                 else if (!this.hasAttribute('playable'))
                 {
@@ -356,10 +371,16 @@
                 }
             });
 
-            console.log("Setted");
+           
         }
+         
+         
+        // Reference the auto-generated proxy for the hub.
 
+
+
+   
     </script>
 
-
+   
 </div>

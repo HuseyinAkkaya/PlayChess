@@ -18,6 +18,10 @@ namespace Chess.Services
             return db.Users.FirstOrDefault(e => e.UId == UId);
         }
 
+        public List<User> GetOtherUsers(string UId)
+        {
+            return db.Users.Where(e => e.UId != UId).ToList();
+        }
         public void UpdateUser(User user)
         {
             User eUser = db.Users.FirstOrDefault(e => e.UId == user.UId);
@@ -27,7 +31,7 @@ namespace Chess.Services
             eUser.Title= user.Title;
             eUser.WonCount = user.WonCount;
             eUser.DrawCount = user.DrawCount;
-            db.Entry(user).State = EntityState.Modified;
+            db.Entry(eUser).State = EntityState.Modified;
             db.SaveChanges();
         }
 

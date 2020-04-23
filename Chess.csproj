@@ -186,6 +186,10 @@
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="App_Start\Startup.Auth.cs" />
     <Compile Include="App_Start\WebApiConfig.cs" />
+    <Compile Include="Entities\Friend.cs" />
+    <Compile Include="Entities\Invitation.cs" />
+    <Compile Include="Enums\InvitationState.cs" />
+    <Compile Include="Enums\InvitationType.cs" />
     <Compile Include="Hubs\ChessHub.cs" />
     <Compile Include="Classes\Cell.cs" />
     <Compile Include="Contexts\ChessContext.cs" />
@@ -204,15 +208,23 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202004182235552_InitialCreate.cs" />
+    <Compile Include="Migrations\202004182235552_InitialCreate.Designer.cs">
+      <DependentUpon>202004182235552_InitialCreate.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
     <Compile Include="Models\GameViewModel.cs" />
     <Compile Include="Models\IdentityModels.cs" />
+    <Compile Include="Models\InvitationViewModel.cs" />
     <Compile Include="Models\ManageViewModels.cs" />
+    <Compile Include="Models\OnlineUserViewModel.cs" />
     <Compile Include="Models\PieceModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Services\BoardService.cs" />
     <Compile Include="Services\GameControlService.cs" />
     <Compile Include="Services\GameRoomDbService.cs" />
+    <Compile Include="Services\InvitationService.cs" />
     <Compile Include="Services\UserConnectionService.cs" />
     <Compile Include="Services\UserService.cs" />
     <Compile Include="Startup.cs" />
@@ -297,6 +309,9 @@
     <Content Include="Views\Game\Room.cshtml" />
     <Content Include="Views\Shared\_GameBoardPartial.cshtml" />
     <Content Include="Views\Game\Chat.cshtml" />
+    <Content Include="Views\Game\FindUsers.cshtml" />
+    <Content Include="Views\Game\Invitations.cshtml" />
+    <Content Include="Views\Game\MyGames.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
@@ -315,6 +330,11 @@
     <None Include="packages.config" />
     <Content Include="Scripts\jquery-3.4.1.slim.min.map" />
     <Content Include="Scripts\jquery-3.4.1.min.map" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Migrations\202004182235552_InitialCreate.resx">
+      <DependentUpon>202004182235552_InitialCreate.cs</DependentUpon>
+    </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

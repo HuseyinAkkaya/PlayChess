@@ -46,8 +46,9 @@ namespace Chess.Services
         {
             GameRoom gameRoom = db.GameRooms.FirstOrDefault(e => e.Id == model.RoomId);
             List<PieceModel> fark = new List<PieceModel>();
+            
             gameRoom.Pieces.ToList().ForEach(g => {
-                PieceModel aPiece = model.Pieces.FirstOrDefault(e => e.Id == g.Id && (e.Row != g.Row || e.Col != g.Col || e.Name != g.Name || e.Status != g.Status));
+              PieceModel aPiece = model.Pieces.FirstOrDefault(e => e.Id == g.Id && (e.Row != g.Row || e.Col != g.Col || e.Name != g.Name || e.Status != g.Status));
                 if(aPiece!=null)
                 fark.Add(aPiece);
             });
@@ -56,7 +57,6 @@ namespace Chess.Services
                 var aPiece = gameRoom.Pieces.Single(k => k.Id == e.Id);
                 if (e.Col==0 && e.Row == 0)
                 {
-                   
                     db.Entry(aPiece).State = EntityState.Deleted;
                     db.SaveChanges();
                 }
@@ -74,6 +74,32 @@ namespace Chess.Services
             db.Entry(gameRoom).State = EntityState.Modified;
             db.SaveChanges();
         }
+
+       public List<GameViewModel> GetGames(string userId, bool isAll=false)
+        {
+            var query = db.GameRooms.Where(e => e.BlackUserId == userId || e.WhiteUserId == userId).AsQueryable();
+
+            if (!isAll)
+            {
+                query.Where(e => e.GameStatus != GameStatus.BlackWon && e.GameStatus != GameStatus.WhiteWon && e.GameStatus != GameStatus.Scoreless);
+            }
+
+            List<GameRoom> gameRooms = query.ToList();
+
+            List<GameViewModel> gameViewModels = gameRooms.Select(e=> new GameViewModel() {
+                Id=e.Id,
+                Color = e.WhiteUserId==userId? SideColor.White : SideColor.Black,
+                WhiteUserId = e.WhiteUserId,
+                BlackUserId = e.BlackUserId,
+                OpponentUserMail = db.Users.FirstOrDefault(u=> u.UId==(e.WhiteUserId==userId?e.BlackUserId:e.WhiteUserId )).EMail, 
+                Turn = e.Turn,
+                GameStatus = e.GameStatus,
+                RoomId = e.Id,
+            }).ToList();
+
+            return gameViewModels;
+        }
+
         public int CreateGame(String whiteUserId,String blackUserId)
         {
             GameRoom gameRoom = new GameRoom();
