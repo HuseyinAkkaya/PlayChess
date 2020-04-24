@@ -1,10 +1,12 @@
 ﻿/* ChessBoard */
 
-.ChessBoard{
+.ChessBoard {
     margin-left: auto;
     margin-right: auto;
-    margin-top: 20px;
-    margin-bottom: 20px;
+    max-height: 500px;
+    max-width: 500px;
+    min-height: 200px;
+    min-width: 200px;
 }
 
 /* Cell */

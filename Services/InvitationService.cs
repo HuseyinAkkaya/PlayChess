@@ -23,17 +23,23 @@ namespace Chess.Services
             return query.ToList();
         }
 
-        public void SendInvitation(string senderUId ,string receiverUId,InvitationType invitationType)
+        public bool SendInvitation(string senderUId ,string receiverUId,InvitationType invitationType)
         {
+
+            if(db.Invitations.Any(e=> e.InvitationFrom==senderUId && e.InvitationTo == receiverUId && e.InvitationState == InvitationState.Pending && e.InvitationType == invitationType))
+            {
+                return false;
+            }
             Invitation invitation = new Invitation() { 
             InvitationFrom = senderUId,
             InvitationTo = receiverUId,
             InvitationType=invitationType,
             InvitationState = InvitationState.Pending
             };
-
+            
             db.Invitations.Add(invitation);
             db.SaveChanges();
+            return true;
         }
 
         public void DeleteInvitation(Invitation invitation)

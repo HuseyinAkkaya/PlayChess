@@ -27,7 +27,6 @@ namespace Chess.Controllers
         // GET: Game
         public ActionResult Index()
         {
-            roomService.CreateGame("a", "b");
             return View();
         }
 
@@ -109,7 +108,15 @@ namespace Chess.Controllers
 
         public ActionResult Invite(string receiverUid, InvitationType invitationType)
         {
-            invitationService.SendInvitation(User.Identity.GetUserId(), receiverUid, invitationType);
+           if(invitationService.SendInvitation(User.Identity.GetUserId(), receiverUid, invitationType))
+            {
+                TempData["invitationInfo"] = "Your request has been sent.";
+            }
+            else
+            {
+                TempData["invitationInfo"] = "You have already a pending invitation.";
+            }
+
             return RedirectToAction("FindUsers");
         }
 

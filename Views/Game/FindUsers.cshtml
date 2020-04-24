@@ -3,7 +3,19 @@
 
 @{
     ViewBag.Title = "FindUsers";
+    string message = TempData["invitationInfo"] as string;
+    TempData["invitationInfo"] = null;
+
 }
+<script>
+    $(document).ready(function () {
+        if ("@message" != "") {
+            alert("@message");
+        }
+        
+    });
+</script>
+
 
 <h2>FindUsers</h2>
 

@@ -13,6 +13,7 @@ namespace Chess.Services
     public class GameRoomDbService
     {
         ChessContext db = new ChessContext();
+        UserService us = new UserService();
         public GameViewModel GetGame(int RoomId)
         {
             GameRoom gameRoom = db.GameRooms.FirstOrDefault(e => e.Id == RoomId);
@@ -37,6 +38,8 @@ namespace Chess.Services
                 Turn = gameRoom.Turn,
                 GameStatus = gameRoom.GameStatus,
                 RoomId = gameRoom.Id,
+                BlackUser = us.GetUser(gameRoom.BlackUserId),
+                WhiteUser = us.GetUser(gameRoom.WhiteUserId)
 
             };
 

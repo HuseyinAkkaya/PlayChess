@@ -13,6 +13,7 @@
     string cellvalue = "";
     string cellname;
     char[] colnamelist = new char[10] { ' ', 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', ' ' };
+
 }
 <input type="hidden" id="fromCell" name="fromCell" value="">
 <input type="hidden" id="toCell" name="toCell" value="">
@@ -72,94 +73,186 @@
 
     </div>
 </div>
-<!-- Chess Board Area -->
-<div id="ChessBoard" class="ChessBoard" style="height: 300px; width: 300px;">
-    @{
-        string GetCell(int row, int col)
-        {
 
+<div class="row" style="margin-top: 40px; margin-bottom: 20px; width:100%;">
+    <div class="col-md-3">
+        <table border="0" width="100%" style="text-align:center;">
+            <tr style="height:30px;">
+                <td colspan="3">
+                    White Player
+                </td>
+            </tr>
+            <tr style="height:30px;">
+                <td colspan="3">
+                    @Model.WhiteUser.EMail
+                </td>
+            </tr>
+            <tr style="height:30px;">
+                <td colspan="3">
+                    @(Model.WhiteUser.Title == Chess.Enums.Title.NONE ? "" : Model.WhiteUser.Title.ToString())&nbsp;@Model.WhiteUser.Name&nbsp;@Model.WhiteUser.Surname
+                </td>
+            </tr>
+            <tr  style="height:30px;"></tr>
+            <tr style="height:30px;">
+                <td>
+                    Win
+                </td>
+                <td>
+                    Draw
+                </td>
+                <td>
+                    Lose
+                </td>
+            </tr>
+            <tr style="height:30px;">
+                <td>
+                    @Model.WhiteUser.WonCount
+                </td>
+                <td>
+                    @Model.WhiteUser.DrawCount
+                </td>
+                <td>
+                    @Model.WhiteUser.LoseCount
+                </td>
+            </tr>
+        </table>
 
-            // Set cell names ("cell90", "cell99", "cell00", "cell09")
-            cellname = "cell" + row + col;
-            // If buttons are play area
-            if (row < 9 && row > 0 && col > 0 && col < 9)
+    </div>
+    <div class="col-md-6 ChessBoard" id="ChessBoard" style="height: 350px; width: 350px; margin-top:0px;">
+        @{
+            string GetCell(int row, int col)
             {
-                // Set default classes to playground cells
-                cellclasses = defaultcellclasses;
 
-                // Is Cell Disabled?
-                celldisabled = false;
 
-                // Set playground cells values
-                cellvalue = "";
-
-                // Set Cell Colors
-                if ((row % 2 == 0 && col % 2 == 0) || (row % 2 == 1 && col % 2 == 1))
+                // Set cell names ("cell90", "cell99", "cell00", "cell09")
+                cellname = "cell" + row + col;
+                // If buttons are play area
+                if (row < 9 && row > 0 && col > 0 && col < 9)
                 {
-                    Console.WriteLine("a");
-                    cellclasses += " browncell";
+                    // Set default classes to playground cells
+                    cellclasses = defaultcellclasses;
+
+                    // Is Cell Disabled?
+                    celldisabled = false;
+
+                    // Set playground cells values
+                    cellvalue = "";
+
+                    // Set Cell Colors
+                    if ((row % 2 == 0 && col % 2 == 0) || (row % 2 == 1 && col % 2 == 1))
+                    {
+                        Console.WriteLine("a");
+                        cellclasses += " browncell";
+                    }
+                    else
+                    {
+                        cellclasses += " whitecell";
+                    }
+
+
                 }
                 else
+                // If buttons are info buttons for user
                 {
-                    cellclasses += " whitecell";
+                    // Set row names to info area
+                    if ((col == 0 || col == 9) && row > 0 && row < 9)
+                    {
+                        cellvalue = row.ToString();
+                    }
+                    // Set col numbers to info area
+                    else if ((row == 0 || row == 9) && col > 0 && col < 9)
+                    {
+                        cellvalue = colnamelist[col].ToString();
+                    }
+                    // Set corner cells names
+                    else
+                    {
+                        cellvalue = "";
+                    }
+
+                    cellclasses = defaultcellclasses + " infocell";
+                    celldisabled = true;
                 }
+                string cell = "<button id=\"" + @cellname + "\" name=\"" + @cellname + "\" class=\"" + @cellclasses + "\" " + (celldisabled ? ("disabled=\"" + @celldisabled + "\"") : "") + " >"
+                    + @cellvalue + "</button>";
+                return cell;
+            }
 
-
+        }
+        @{
+            if (Model.Color == Chess.Enums.SideColor.Black)
+            {
+                for (int row = 0; row <= 9; row++)
+                {
+                    for (int col = 9; col >= 0; col--)
+                    {
+                        // GetBoard(col, row);
+                        @Html.Raw(GetCell(row, col));
+                    }
+                }
             }
             else
-            // If buttons are info buttons for user
             {
-                // Set row names to info area
-                if ((col == 0 || col == 9) && row > 0 && row < 9)
+                for (int row = 9; row >= 0; row = row - 1)
                 {
-                    cellvalue = row.ToString();
-                }
-                // Set col numbers to info area
-                else if ((row == 0 || row == 9) && col > 0 && col < 9)
-                {
-                    cellvalue = colnamelist[col].ToString();
-                }
-                // Set corner cells names
-                else
-                {
-                    cellvalue = "";
-                }
-
-                cellclasses = defaultcellclasses + " infocell";
-                celldisabled = true;
-            }
-            string cell = "<button id=\"" + @cellname + "\" name=\"" + @cellname + "\" class=\"" + @cellclasses + "\" " + (celldisabled ? ("disabled=\"" + @celldisabled + "\"") : "") + " >"
-                + @cellvalue + "</button>";
-            return cell;
-        }
-
-    }
-    @{
-        if (Model.Color == Chess.Enums.SideColor.Black)
-        {
-            for (int row = 0; row <= 9; row++)
-            {
-                for (int col = 9; col >= 0; col--)
-                {
-                    // GetBoard(col, row);
-                    @Html.Raw(GetCell(row, col));
+                    for (int col = 0; col <= 9; col = col + 1)
+                    {
+                        // GetBoard(col, row);
+                        @Html.Raw(GetCell(row, col));
+                    }
                 }
             }
-        }
-        else
-        {
-            for (int row = 9; row >= 0; row = row - 1)
-            {
-                for (int col = 0; col <= 9; col = col + 1)
-                {
-                    // GetBoard(col, row);
-                    @Html.Raw(GetCell(row, col));
-                }
-            }
-        }
 
-    }
+        }
+    </div>
+
+    <div class="col-md-3">
+        <table border="0" width="100%" style="text-align:center;">
+            <tr style="height:30px;">
+                <td colspan="3">
+                    Black Player
+                </td>
+            </tr>
+            <tr style="height:30px;">
+                <td colspan="3">
+                    @Model.BlackUser.EMail
+                </td>
+            </tr>
+            <tr style="height:30px;">
+                <td colspan="3">
+                    @(Model.BlackUser.Title == Chess.Enums.Title.NONE ? "" : Model.BlackUser.Title.ToString())&nbsp;@Model.BlackUser.Name&nbsp;@Model.BlackUser.Surname
+                </td>
+            </tr>
+            <tr style="height:30px;"></tr>
+            <tr style="height:30px;">
+                <td>
+                    Win
+                </td>
+                <td>
+                    Draw
+                </td>
+                <td>
+                    Lose
+                </td>
+            </tr>
+            <tr style="height:30px;">
+                <td>
+                    @Model.BlackUser.WonCount
+                </td>
+                <td>
+                    @Model.BlackUser.DrawCount
+                </td>
+                <td>
+                    @Model.BlackUser.LoseCount
+                </td>
+            </tr>
+        </table>
+
+    </div>
 </div>
+
+<!-- Chess Board Area -->
+
 
 
 
@@ -259,7 +352,7 @@
             console.log("filled");
            pieceList = model.Pieces;
 
-          
+
            if (model.GameStatus == gameStatusEnum.BlackWon) {
                gameContinue = false;
                message="Game Over\nBlack Player Won";
@@ -297,7 +390,7 @@
                 chat.server.sendChatMessage(receiverid, roomid);
 
            }
-            
+
            turn = model.Turn;
 
             if (!gameContinue) {
@@ -371,16 +464,16 @@
                 }
             });
 
-           
+
         }
-         
-         
+
+
         // Reference the auto-generated proxy for the hub.
 
 
 
-   
+
     </script>
 
-   
+
 </div>

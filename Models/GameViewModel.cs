@@ -21,6 +21,8 @@ namespace Chess.Models
         public string BlackUserId { get; set; }
         public string OpponentUserMail { get; set; }
         public GameStatus GameStatus { get; set; }
+        public User WhiteUser { get; set; }
+        public User BlackUser { get; set; }
 
         public string MyHashCode()
         {
